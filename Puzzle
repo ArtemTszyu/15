@@ -1,0 +1,261 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+void game_zone(int array[4][4])
+{
+    for (int i = 0; i < 4; i++)
+    {
+        cout << " +----+----+----+----+" << endl;
+        for (int j = 0; j < 4; j++)
+        {
+            if (array[i][j] < 10)
+            {
+                if (array[i][j] == 0)
+                    cout << " | "
+                         << " ";
+                else
+                    cout << " | "
+                         << "0" << array[i][j];
+            }
+            else
+                cout << " | " << array[i][j];
+            if (array[i][j] == 0)
+                cout << " ";
+        }
+        cout << " | " << endl;
+    }
+    cout << " +----+----+----+----+" << endl;
+}
+void zone_filling(int array[4][4])
+{
+    int k = 1;
+    while (k < 16)
+    {
+        int i = rand() % 4;
+        int j = rand() % 4;
+        if (array[i][j] == 0)
+        {
+            array[i][j] = k;
+            k++;
+        }
+    }
+}
+void move_down(int array[4][4])
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            if (array[i][j] == 0)
+            {
+                if (i != 0)
+                {
+                    swap(array[i][j], array[i - 1][j]);
+
+                    break;
+                }
+                else
+                {
+                    cout << "Error" << endl;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void move_up(int array[4][4])
+{
+    int ex = 0;
+    for (int i = 0; i < 4; i++)
+    {
+        if (ex == 1)
+        {
+            break;
+        }
+        for (int j = 0; j < 4; j++)
+        {
+            if (ex == 1)
+            {
+                break;
+            }
+            if (array[i][j] == 0)
+            {
+                if (i != 3)
+                {
+                    swap(array[i + 1][j], array[i][j]);
+
+                    ex = 1;
+                    break;
+                }
+                else
+                {
+                    cout << "Error" << endl;
+                    ex = 1;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void move_left(int array[4][4])
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            if (array[i][j] == 0)
+            {
+                if (j != 3)
+                {
+                    swap(array[i][j], array[i][j + 1]);
+                    break;
+                }
+                else
+                {
+                    cout << "Error" << endl;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void move_right(int array[4][4])
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            if (array[i][j] == 0)
+            {
+                if (j != 0)
+                {
+                    swap(array[i][j], array[i][j - 1]);
+
+                    break;
+                }
+                else
+                {
+                    cout << "Error" << endl;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+bool game_win(int array[4][4])
+{
+    int k = 1;
+    for (int i = 0; i < 4; i++)
+    {
+        if (k == 15)
+        {
+            break;
+        }
+        for (int j = 0; j < 4; j++)
+        {
+            if (k == 15)
+            {
+                break;
+            }
+            if (j < 3)
+            {
+                if (array[i][j] < array[i][j + 1])
+                {
+                    k++;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (i < 3)
+            {
+                if (array[i][j] < array[i + 1][0])
+                {
+                    k++;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+int main()
+{
+    char op;
+    int array[4][4] = {};
+    srand(time(NULL));
+    zone_filling(array);
+    game_zone(array);
+    while (cin >> op)
+    {
+        switch (op)
+        {
+            case 'l':
+            {
+                move_right(array);
+                game_zone(array);
+                if (game_win(array))
+                {
+                    cout << "You won" << endl;
+                    return -1;
+                }
+                break;
+            }
+            case 'h':
+            {
+                move_left(array);
+                game_zone(array);
+                if (game_win(array))
+                {
+                    cout << "You win" << endl;
+                    return -1;
+                }
+                break;
+            }
+            case 'k':
+            {
+                move_up(array);
+                game_zone(array);
+                if (game_win(array))
+                {
+                    cout << "You won" << endl;
+                    return -1;
+                }
+                break;
+            }
+            case 'j':
+            {
+                move_down(array);
+                game_zone(array);
+                if (game_win(array))
+                {
+                    cout << "You won" << endl;
+                    return -1;
+                }
+                break;
+            }
+            case 'q':
+            {
+                cout << "You won" << endl;
+                return -1;
+            }
+            default:
+            {
+                cout << "Wrong symbol" << endl;
+                break;
+            }
+        }
+    }
+}
